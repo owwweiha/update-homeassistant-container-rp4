@@ -2,6 +2,8 @@
 
 Simple BASH script for updating homeassistant running as container on raspberry 4.
 
+**NOTE: For this script to work, the homeassistant container needs to be run with podman, not docker**
+
 You could use this script in a cron job to automatically check for updates on the homeassistant container every night.
 
 The script was developed to fulfill my needs, no guarantee that it works in different environments.
