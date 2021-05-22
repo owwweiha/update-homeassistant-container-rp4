@@ -63,10 +63,10 @@ update_image() {
 }
 
 update_container() {
-  echo -e "Stopping old ${CYAN}${container_name}${NC} container"
+  echo -e "${RED}Stopping old ${CYAN}${container_name}${NC} container${NC}"
   podman stop "${container_name}"
 
-  echo -e "Removing old ${CYAN}${container_name}${NC} container"
+  echo -e "${RED}Removing old ${CYAN}${container_name}${NC} container${NC}"
   podman rm "${container_name}"
 
   echo -e "Starting new ${CYAN}${container_name}${NC} container"
@@ -83,12 +83,13 @@ update_container() {
   echo -e "${GREEN}Done${NC}"
 }
 
-compare_image_ids() {
+compare_image_digest() {
   echo -e "Comparing image id of running ${CYAN}${container_name}${NC} container with image id of ${CYAN}${image}${NC}"
   # there is a container named ${container_name} running. get image id
   container_image_id=$(podman inspect ${container_name} --format "{{.Image}}")
-  image_id=$(podman inspect ${image} --format "{{.Id}}")
-  if [[ "${container_image_id}" == "${image_id}" ]]; then
+  container_image_digest=$(podman inspect ${container_image_id} --format "{{.Digest}}")
+  image_digest=$(podman inspect ${image} --format "{{.Digest}}")
+  if [[ "${container_image_digest}" == "${image_digest}" ]]; then
     echo -e "Container ${CYAN}${container_name}${NC} is already on newest image version\n"
     return 1
   else
@@ -98,9 +99,10 @@ compare_image_ids() {
 }
 
 main() {
+  date
   check_var
 
-  check_image 
+  check_image
   image_exists=$?
   if [[ "${image_exists}" == 0 ]]; then
     update_image
@@ -111,7 +113,7 @@ main() {
   if [[ "${container_exists}" == 0 ]]; then
     update_container
   elif [[ "${container_exists}" == 1 ]]; then
-    compare_image_ids
+    compare_image_digest
     newest_image_running=$?
     if [[ "${newest_image_running}" == 1 ]]; then
       echo -e "${GREEN}Nothing to do${NC}"
