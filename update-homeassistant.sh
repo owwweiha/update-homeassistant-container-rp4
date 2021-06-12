@@ -85,6 +85,8 @@ update_container() {
 
 compare_image_digest() {
   echo -e "Comparing image id of running ${CYAN}${container_name}${NC} container with image id of ${CYAN}${image}${NC}"
+  # first try to pull new image
+  update_image
   # there is a container named ${container_name} running. get image id
   container_image_id=$(podman inspect ${container_name} --format "{{.Image}}")
   container_image_digest=$(podman inspect ${container_image_id} --format "{{.Digest}}")
