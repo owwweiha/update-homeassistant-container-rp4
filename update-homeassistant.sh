@@ -6,7 +6,7 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 # full path (including registry like docker.io or gcr.io) to image that should be used
-image="docker.io/homeassistant/raspberrypi4-homeassistant:stable"
+image="ghcr.io/home-assistant/raspberrypi4-homeassistant:stable"
 # name of container for podman commands
 container_name="homeassistant"
 # path to config folder for homeassistant
@@ -71,10 +71,9 @@ update_container() {
 
   echo -e "Starting new ${CYAN}${container_name}${NC} container"
   podman run \
-  --init \
   --detach \
+  --privileged \
   --name "${container_name}" \
-  --restart=unless-stopped \
   --volume /etc/localtime:/etc/localtime:ro \
   --volume "${config_folder}":/config \
   --network=host \
